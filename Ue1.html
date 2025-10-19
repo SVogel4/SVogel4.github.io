@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Sarah Vogel – Persönliche Startseite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --primary: #909191;
+            --accent: rgb(97, 119, 111);
+            --card-bg: #f5f7fa;
+            --text: #222;
+            --border: #b0bec5;
+            --table-hover: #e0f7fa;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--accent);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+        }
+        header {
+            background: var(--primary);
+            color: #fff;
+            padding: 2.5rem 0 1.5rem 0;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.3rem;
+            letter-spacing: 1px;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.15rem;
+            font-weight: 400;
+        }
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+        section {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(32,181,129,0.10);
+            padding: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .profile figure {
+            margin: 0;
+            flex-shrink: 0;
+        }
+        .profile img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            background: #fff;
+        }
+        .profile figcaption {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-top: 0.7rem;
+        }
+        .profile-text {
+            flex: 1;
+            min-width: 220px;
+        }
+        .profile-text p {
+            margin-bottom: 1.2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.2rem;
+            font-size: 1.05rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 1em 0.7em;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+        tbody tr:hover {
+            background: var(--table-hover);
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 1.2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 6px 24px rgba(32,181,129,0.18);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.2s, transform 0.2s;
+            border: 1px solid var(--border);
+        }
+        .card:hover {
+            box-shadow: 0 12px 32px rgba(32,181,129,0.28);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .card a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: #eee;
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
+        }
+        .card-content {
+            padding: 1.2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.7rem;
+            color: var(--primary);
+        }
+        .card-text {
+            font-size: 1rem;
+            color: #333;
+        }
+        @media (max-width: 720px) {
+            main { padding: 1.2rem 0.5rem; }
+            section { padding: 1.2rem; }
+            .profile { flex-direction: column; gap: 1.2rem; }
+            .profile img { width: 90px; height: 90px; }
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+        }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.4rem; }
+            section { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sarah Vogel</h1>
+        <p>Willkommen auf meiner persönlichen Startseite!</p>
+    </header>
+    <main>
+        <section class="profile">
+            
+            <div class="profile-text">
+                <p>Ich studiere Geoinformatik und interessiere mich für Karten, Daten und Webentwicklung. Auf dieser Seite findest du eine Übersicht meiner Stationen und einige Links zu meinen Projekten.</p>
+                <p>Viel Spaß beim Stöbern!</p>
+            </div>
+        </section>
+        <figure style="display: flex; flex-direction: column; align-items: center; margin: 2rem 0;">
+    <img src="IMG_1653.JPEG" alt="Sarah Vogel" style="width: 180px; height: 180px; object-fit: cover; border-radius: 12px; border: 3px solid #909191; background: #fff;">
+    <figcaption style="margin-top: 0.7rem; color: #909191; font-size: 1rem;">Das bin ich</figcaption>
+</figure>
+        <section>
+            <h2>Meine Stationen</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jahr</th>
+                        <th>Station</th>
+                        <th>Ort</th>
+                        <th>Stichwort</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <tr>
+                        <td>2022</td>
+                        <td>freiwilliges Praktikum</td>
+                        <td>Wörth</td>
+                        <td>Architekt</td>
+                    </tr>
+                    <tr>
+                        <td>2023</td>
+                        <td>Abitur</td>
+                        <td>Wörth am Rhein</td>
+                        <td>Schule</td>
+                    </tr>
+                    <tr>
+                        <td>2023</td>
+                        <td>Vorpraktikum</td>
+                        <td>Landau</td>
+                        <td>Engagement</td>
+                    </tr>
+                    <tr>
+                        <td>2023</td>
+                        <td>Studienbeginn</td>
+                        <td>Mainz</td>
+                        <td>Geoinformatik</td>
+                    </tr>
+                   
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Galerie</h2>
+            <div class="gallery">
+    <div class="card">
+        <a href="https://github.com/SVogel4" target="_blank" rel="noopener">
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png" alt="Code Symbol">
+            <div class="card-content">
+                <div class="card-title">GitHub Portfolio</div>
+                <div class="card-text">Meine Projekte und Code auf GitHub.</div>
+            </div>
+        </a>
+    </div>
+    <div class="card">
+        <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">
+            <img src="Welt.jpg" alt="OpenStreetMap Symbol">
+            <div class="card-content">
+                <div class="card-title">OpenStreetMap</div>
+                <div class="card-text">Meine Beiträge zur freien Weltkarte.</div>
+            </div>
+        </a>
+    </div>
+    <div class="card">
+        <a href="https://svogel4.github.io" target="_blank" rel="noopener">
+            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png" alt="Web Symbol">
+            <div class="card-content">
+                <div class="card-title">Web-Projekte</div>
+                <div class="card-text">Eigene Webseiten und Visualisierungen.</div>
+            </div>
+        </a>
+    </div>
+</div>
+        </section>
+    </main>
+</body>
+</html>
