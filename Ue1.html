@@ -156,6 +156,16 @@
             font-size: 1rem;
             color: #333;
         }
+        /* zusätzlich: "galerie" als horizontaler Block (nebeneinander) */
+        .galerie {
+            /* überschreibt das grid und ordnet die Elemente nebeneinander an */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        /* responsive Verhalten beibehalten */
         @media (max-width: 720px) {
             main { padding: 1.2rem 0.5rem; }
             section { padding: 1.2rem; }
@@ -165,6 +175,8 @@
                 grid-template-columns: 1fr;
                 gap: 1.2rem;
             }
+            /* bei kleinen Bildschirmen die .galerie ebenfalls einspaltig */
+            .galerie { flex-direction: column; }
         }
         @media (max-width: 600px) {
             header h1 { font-size: 1.4rem; }
@@ -231,35 +243,35 @@
         </section>
         <section>
             <h2>Galerie</h2>
-            <div class="gallery">
-    <div class="card">
-        <a href="https://github.com/SVogel4" target="_blank" rel="noopener">
-            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png" alt="Code Symbol">
-            <div class="card-content">
-                <div class="card-title">GitHub Portfolio</div>
-                <div class="card-text">Meine Projekte und Code auf GitHub.</div>
+            <div class="gallery galerie">
+                <div class="card">
+                    <a href="https://github.com/SVogel4" target="_blank" rel="noopener">
+                        <img src="assets/code.png" alt="Code Symbol">
+                        <div class="card-content">
+                            <div class="card-title">GitHub Portfolio</div>
+                            <div class="card-text">Meine Projekte und Code auf GitHub.</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.openstreetmap.org/user/SVogel4" target="_blank" rel="noopener">
+                        <img src="assets/osm.png" alt="OpenStreetMap Symbol">
+                        <div class="card-content">
+                            <div class="card-title">OpenStreetMap</div>
+                            <div class="card-text">Meine Beiträge zur freien Weltkarte.</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://svogel4.github.io" target="_blank" rel="noopener">
+                        <img src="assets/web.png" alt="Web Symbol">
+                        <div class="card-content">
+                            <div class="card-title">Web-Projekte</div>
+                            <div class="card-text">Eigene Webseiten und Visualisierungen.</div>
+                        </div>
+                    </a>
+                </div>
             </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">
-            <img src="Welt.jpg" alt="OpenStreetMap Symbol">
-            <div class="card-content">
-                <div class="card-title">OpenStreetMap</div>
-                <div class="card-text">Meine Beiträge zur freien Weltkarte.</div>
-            </div>
-        </a>
-    </div>
-    <div class="card">
-        <a href="https://svogel4.github.io" target="_blank" rel="noopener">
-            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png" alt="Web Symbol">
-            <div class="card-content">
-                <div class="card-title">Web-Projekte</div>
-                <div class="card-text">Eigene Webseiten und Visualisierungen.</div>
-            </div>
-        </a>
-    </div>
-</div>
         </section>
     </main>
 </body>
