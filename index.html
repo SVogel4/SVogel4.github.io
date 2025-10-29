@@ -272,52 +272,97 @@
 })();
 
 (function(){
-  const aboutLink=document.getElementById('about-link');
-  const newsLink=document.getElementById('news-link');
-  const projectsLink=document.getElementById('projects-link');
-  const aboutSection=document.getElementById('about-section');
-  const newsSection=document.getElementById('news-section');
-  const projectsSection=document.getElementById('projects-section');
-  const navLinks=Array.from(document.querySelectorAll('.main-nav a'));
-  const aboutDesc=document.getElementById('about-desc');
+    const aboutLink=document.getElementById('about-link');
+    const newsLink=document.getElementById('news-link');
+    const projectsLink=document.getElementById('projects-link');
+    const aboutSection=document.getElementById('about-section');
+    const newsSection=document.getElementById('news-section');
+    const projectsSection=document.getElementById('projects-section');
+    const navLinks=Array.from(document.querySelectorAll('.main-nav a'));
+    const aboutDesc=document.getElementById('about-desc');
 
-  function setActive(link){ navLinks.forEach(a=>a.classList.remove('active')); link&&link.classList.add('active'); }
-  function showSection(sec){
-    [aboutSection,newsSection,projectsSection].forEach(s=>{ if(s) s.style.display='none'; });
-    if(sec) sec.style.display='block';
-    aboutDesc&&(aboutDesc.style.display=(sec===aboutSection)?'block':'none');
-    const contact=document.getElementById('contact-card');
-    if(contact) contact.style.display=(sec===aboutSection)?'flex':'none';
-    sec&&sec.scrollIntoView({behavior:'smooth',block:'start'});
-  }
+    function setActive(link){ navLinks.forEach(a=>a.classList.remove('active')); link&&link.classList.add('active'); }
+    function showSection(sec){
+      [aboutSection,newsSection,projectsSection].forEach(s=>{ if(s) s.style.display='none'; });
+      if(sec) sec.style.display='block';
+      aboutDesc&&(aboutDesc.style.display=(sec===aboutSection)?'block':'none');
+      const contact=document.getElementById('contact-card');
+      if(contact) contact.style.display=(sec===aboutSection)?'flex':'none';
+      sec&&sec.scrollIntoView({behavior:'smooth',block:'start'});
+    }
 
-  showSection(aboutSection); setActive(aboutLink);
+    showSection(aboutSection); setActive(aboutLink);
 
-  aboutLink&&aboutLink.addEventListener('click',ev=>{ev.preventDefault(); setActive(aboutLink); showSection(aboutSection);});
+    aboutLink&&aboutLink.addEventListener('click',ev=>{ev.preventDefault(); setActive(aboutLink); showSection(aboutSection);});
 
-  newsLink&&newsLink.addEventListener('click',ev=>{
-    ev.preventDefault(); setActive(newsLink); showSection(newsSection);
-    const container=document.getElementById('news-items');
-    if(!container) return; container.innerHTML='<p>Lade News…</p>';
-    const url=newsLink.dataset.src||'news.json';
-    fetch(url,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status); return r.json();})
-    .then(data=>{
-      if(!Array.isArray(data)||data.length===0){ container.innerHTML='<p>Keine News vorhanden.</p>'; return; }
-      const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      container.innerHTML=data.map(n=>{
-        return `<article>
-          <h3>${esc(n.title)}</h3>
-          ${n.date?`<div style="font-size:.9rem;opacity:.75;margin-bottom:.5rem">${esc(n.date)}</div>`:''}
-          ${n.image?`<div><img src="${esc(n.image)}" alt="${esc(n.title)}"></div>`:''}
-          ${n.summary?`<p>${esc(n.summary)}</p>`:''}
-          ${n.content?`<div>${esc(n.content)}</div>`:''}
-        </article>`;
-      }).join('');
-    }).catch(err=>{ console.error(err); container.innerHTML='<p>Fehler beim Laden der News.</p>'; });
-  });
+    newsLink&&newsLink.addEventListener('click',ev=>{ // klick-Handler bleibt bestehen
+      ev.preventDefault(); setActive(newsLink); showSection(newsSection);
+      const container=document.getElementById('news-items');
+      if(!container) return; container.innerHTML='<p>Lade News…</p>';
+      const url=newsLink.dataset.src||'news.json';
+      fetch(url,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status); return r.json();})
+      .then(data=>{
+        if(!Array.isArray(data)||data.length===0){ container.innerHTML='<p>Keine News vorhanden.</p>'; return; }
+        const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        container.innerHTML=data.map(n=>{
+          return `<article>
+            <h3>${esc(n.title)}</h3>
+            ${n.date?`<div style="font-size:.9rem;opacity:.75;margin-bottom:.5rem">${esc(n.date)}</div>`:''}
+            ${n.image?`<div><img src="${esc(n.image)}" alt="${esc(n.title)}"></div>`:''}
+            ${n.summary?`<p>${esc(n.summary)}</p>`:''}
+            ${n.content?`<div>${esc(n.content)}</div>`:''}
+          </article>`;
+        }).join('');
+      }).catch(err=>{ console.error(err); container.innerHTML='<p>Fehler beim Laden der News.</p>'; });
+    });
 
-  projectsLink&&projectsLink.addEventListener('click',ev=>{ev.preventDefault(); setActive(projectsLink); showSection(projectsSection);});
-})();
+    // News laden / rendern (einheitlich, sicherer)
+    (function(){
+      const container = document.getElementById('news-items');
+      if(!container) return;
+      const url = newsLink && newsLink.dataset.src ? newsLink.dataset.src : 'news.json';
+      let cached = null;
+
+      function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function render(data){
+        if(!Array.isArray(data) || data.length === 0){ container.innerHTML = '<p>Keine News vorhanden.</p>'; return; }
+        container.innerHTML = data.map(n => {
+          return `<article>
+            <h3>${esc(n.title)}</h3>
+            ${n.date?`<div style="font-size:.9rem;opacity:.75;margin-bottom:.5rem">${esc(n.date)}</div>`:''}
+            ${n.image?`<div><img src="${esc(n.image)}" alt="${esc(n.title)}"></div>`:''}
+            ${n.summary?`<p>${esc(n.summary)}</p>`:''}
+            ${n.content?`<div>${n.content}</div>`:''}
+          </article>`;
+        }).join('');
+      }
+
+      async function loadNews(force){
+        if(cached && !force){ render(cached); return; }
+        container.innerHTML = '<p>Lade News…</p>';
+        try{
+          const resp = await fetch(url, { cache: 'no-store' });
+          if(!resp.ok) throw new Error('HTTP '+resp.status);
+          const data = await resp.json();
+          cached = data;
+          render(data);
+        }catch(err){
+          console.error('News load failed', err);
+          container.innerHTML = '<p>Fehler beim Laden der News.</p>';
+        }
+      }
+
+      // preload once (silent) so view is fast on click
+      loadNews(false);
+      // on click always refresh to get fresh content
+      newsLink&&newsLink.addEventListener('click',ev=>{
+        ev.preventDefault(); setActive(newsLink); showSection(newsSection);
+        loadNews(true);
+      }, { once:false });
+    })();
+
+    projectsLink&&projectsLink.addEventListener('click',ev=>{ev.preventDefault(); setActive(projectsLink); showSection(projectsSection);});
+  })();
 
 // Erzwinge für eingebettete Karten in .map-card die Deutschland‑Ansicht
 (function(){
