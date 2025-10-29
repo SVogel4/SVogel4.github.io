@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>3D Gebäude (Cesium)</title>
+  <link href="https://unpkg.com/cesium@1.111/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>html,body,#cesiumContainer{height:100%;margin:0;padding:0;width:100%} #cesiumContainer{min-height:360px}</style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+
+  <script src="https://unpkg.com/cesium@1.111/Build/Cesium/Cesium.js"></script>
+  <script>
+    (function(){
+      // Viewer initialisieren (OSM-Basemap)
+      const viewer = new Cesium.Viewer('cesiumContainer', {
+        imageryProvider: new Cesium.OpenStreetMapImageryProvider(),
+        baseLayerPicker: false,
+        geocoder: false,
+        timeline: false,
+        animation: false,
+        scene3DOnly: true,
+        selectionIndicator: false,
+        infoBox: false
+      });
+
+      // URL des 3D-Tilesets (aktuelle Internetquelle)
+      const tilesetUrl = 'https://sg.geodatenzentrum.de/gdz_basemapde_3d_gebaeude/lod2_3857_null.json';
+
+      // 3D Tileset laden und als extrudierte Gebäude darstellen
+      const tileset = new Cesium.Cesium3DTileset({
+        url: tilesetUrl,
+        maximumScreenSpaceError: 8, // Performance-Tweak
+        maximumMemoryUsage: 512
+      });
+
+      viewer.scene.primitives.add(tileset);
+
+      // Optionales Styling: versuche property-Namen, fallback neutral
+      tileset.readyPromise.then(() => {
+        // Beispielhafter Style: Farbe abhängig von 'height'/'hoehe' etc. (falls vorhanden)
+        tileset.style = new Cesium.Cesium3DTileStyle({
+          color : "(((${height} !== undefined) ? ${height} : ((${hoehe} !== undefined) ? ${hoehe} : ((${h} !== undefined)? ${h} : 0))) > 30) ? color('#c85') : ((((${height} !== undefined) ? ${height} : ((${hoehe} !== undefined) ? ${hoehe} : ((${h} !== undefined)? ${h} : 0))) > 15) ? color('#ffb74d') : color('#ffd54f'))",
+          show : true
+        });
+        // Kamera auf Tileset zoomen
+        viewer.zoomTo(tileset).otherwise(() => {
+          // fallback: Deutschland-Übersicht
+          viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
+        });
+      }).otherwise((err)=>{
+        console.error('Tileset load error', err);
+        viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
+      });
+
+      // Klick: Feature-Eigenschaften anzeigen (falls verfügbar)
+      viewer.screenSpaceEventHandler.setInputAction(function(click) {
+        const picked = viewer.scene.pick(click.position);
+        if (!Cesium.defined(picked)) return;
+        const feature = picked;
+        if (feature && feature.getPropertyNames) {
+          const names = feature.getPropertyNames();
+          const info = names.map(n => `<b>${n}:</b> ${feature.getProperty(n)}`).join('<br>');
+          // kleines Overlay:
+          const div = document.createElement('div');
+          div.style.position = 'absolute';
+          div.style.left = '10px';
+          div.style.top = '10px';
+          div.style.background = 'rgba(0,0,0,0.7)';
+          div.style.color = 'white';
+          div.style.padding = '8px';
+          div.style.maxHeight = '200px';
+          div.style.overflow = 'auto';
+          div.style.zIndex = 9999;
+          div.innerHTML = `<strong>Feature</strong><br>${info}<br><button id="closeInfo">Schließen</button>`;
+          document.body.appendChild(div);
+          document.getElementById('closeInfo').onclick = ()=>div.remove();
+        }
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    })();
+  </script>
+</body>
+</html>

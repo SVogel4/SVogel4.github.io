@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_953b783f49f11f56027d50548eca58da {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_953b783f49f11f56027d50548eca58da" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_953b783f49f11f56027d50548eca58da = L.map(
+                "map_953b783f49f11f56027d50548eca58da",
+                {
+                    // Europa-Zentrum
+                    center: [53.0, 15.0],
+                     crs: L.CRS.EPSG3857,
+                     ...{
+  "zoom": 4,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_183f8e7b61787473d300adb4a56a4090 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_183f8e7b61787473d300adb4a56a4090.addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var tile_layer_15ff6a386ea21b8fb7466de934f9fd9f = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_15ff6a386ea21b8fb7466de934f9fd9f.addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var poly_line_1022c0962d52e2ff70ec6264e03e88c5 = L.polyline(
+                [[49.1167, 8.2833], [46.968, 11.0074], [47.4626, 12.6364], [49.1167, 8.2833]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var marker_b8f6741fdaaaefa81c79720520878ec4 = L.marker(
+                [49.1167, 8.2833],
+                {
+}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var div_icon_ba434b44579069a666674c38752737d6 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#fff;border:1px solid #2b7be4;color:#0b5bd7;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700\"\u003e1\u003c/div\u003e",
+  "iconSize": [30, 30],
+  "iconAnchor": [15, 15],
+  "className": "empty",
+});
+        
+    
+        var popup_69d981097af31469ad94ade4cbfa3a75 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_50123109dfa4aebbd071cb7ab545e9ea = $(`<div id="html_50123109dfa4aebbd071cb7ab545e9ea" style="width: 100.0%; height: 100.0%;"><strong>1. Schaidt</strong><br>Koordinaten: 49.11670, 8.28330</div>`)[0];
+                popup_69d981097af31469ad94ade4cbfa3a75.setContent(html_50123109dfa4aebbd071cb7ab545e9ea);
+            
+        
+
+        marker_b8f6741fdaaaefa81c79720520878ec4.bindPopup(popup_69d981097af31469ad94ade4cbfa3a75)
+        ;
+
+        
+    
+    
+            marker_b8f6741fdaaaefa81c79720520878ec4.bindTooltip(
+                `<div>
+                     1. Schaidt
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b8f6741fdaaaefa81c79720520878ec4.setIcon(div_icon_ba434b44579069a666674c38752737d6);
+            
+    
+            var marker_8894d6bdba36c3d79252576417421304 = L.marker(
+                [46.968, 11.0074],
+                {
+}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var div_icon_0c927b266cb40d6f4af8197d09cd71fa = L.divIcon({
+  "html": "\u003cdiv style=\"background:#fff;border:1px solid #2b7be4;color:#0b5bd7;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700\"\u003e2\u003c/div\u003e",
+  "iconSize": [30, 30],
+  "iconAnchor": [15, 15],
+  "className": "empty",
+});
+        
+    
+        var popup_06b4bbd02d8efdddbb4c67128d248777 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_37d9b17eb49a5a40b0823f6c3b579744 = $(`<div id="html_37d9b17eb49a5a40b0823f6c3b579744" style="width: 100.0%; height: 100.0%;"><strong>2. Sölden</strong><br>Koordinaten: 46.96800, 11.00740</div>`)[0];
+                popup_06b4bbd02d8efdddbb4c67128d248777.setContent(html_37d9b17eb49a5a40b0823f6c3b579744);
+            
+        
+
+        marker_8894d6bdba36c3d79252576417421304.bindPopup(popup_06b4bbd02d8efdddbb4c67128d248777)
+        ;
+
+        
+    
+    
+            marker_8894d6bdba36c3d79252576417421304.bindTooltip(
+                `<div>
+                     2. Sölden
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8894d6bdba36c3d79252576417421304.setIcon(div_icon_0c927b266cb40d6f4af8197d09cd71fa);
+            
+    
+            var marker_f211ab50463a6cb6aa7243b44f6d8a5c = L.marker(
+                [47.4626, 12.6364],
+                {
+}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var div_icon_32750a02076ece4c525429cf636d7f10 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#fff;border:1px solid #2b7be4;color:#0b5bd7;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700\"\u003e3\u003c/div\u003e",
+  "iconSize": [30, 30],
+  "iconAnchor": [15, 15],
+  "className": "empty",
+});
+        
+    
+        var popup_92ad0a61087d3205b8ea97c3b68e2b23 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4d133632866fac88b8194ebfad8432f0 = $(`<div id="html_4d133632866fac88b8194ebfad8432f0" style="width: 100.0%; height: 100.0%;"><strong>3. Leogang</strong><br>Koordinaten: 47.46260, 12.63640</div>`)[0];
+                popup_92ad0a61087d3205b8ea97c3b68e2b23.setContent(html_4d133632866fac88b8194ebfad8432f0);
+            
+        
+
+        marker_f211ab50463a6cb6aa7243b44f6d8a5c.bindPopup(popup_92ad0a61087d3205b8ea97c3b68e2b23)
+        ;
+
+        
+    
+    
+            marker_f211ab50463a6cb6aa7243b44f6d8a5c.bindTooltip(
+                `<div>
+                     3. Leogang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f211ab50463a6cb6aa7243b44f6d8a5c.setIcon(div_icon_32750a02076ece4c525429cf636d7f10);
+            
+    
+            var marker_e65a50316c31dcf9018a02adade43476 = L.marker(
+                [49.1167, 8.2833],
+                {
+}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+        
+    
+            var div_icon_711fb70fd1a0f08fb45f815fd8a94368 = L.divIcon({
+  "html": "\u003cdiv style=\"background:#fff;border:1px solid #2b7be4;color:#0b5bd7;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700\"\u003e4\u003c/div\u003e",
+  "iconSize": [30, 30],
+  "iconAnchor": [15, 15],
+  "className": "empty",
+});
+        
+    
+        var popup_15753e1424db6c373f842f58392758a6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_4fffdf30a09105ab96393803a442978b = $(`<div id="html_4fffdf30a09105ab96393803a442978b" style="width: 100.0%; height: 100.0%;"><strong>4. Schaidt (Ende)</strong><br>Koordinaten: 49.11670, 8.28330</div>`)[0];
+                popup_15753e1424db6c373f842f58392758a6.setContent(html_4fffdf30a09105ab96393803a442978b);
+            
+        
+
+        marker_e65a50316c31dcf9018a02adade43476.bindPopup(popup_15753e1424db6c373f842f58392758a6)
+        ;
+
+        
+    
+    
+            marker_e65a50316c31dcf9018a02adade43476.bindTooltip(
+                `<div>
+                     4. Schaidt (Ende)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e65a50316c31dcf9018a02adade43476.setIcon(div_icon_711fb70fd1a0f08fb45f815fd8a94368);
+            
+    
+            // Setze gesamte Europa als Anfangsansicht
+            map_953b783f49f11f56027d50548eca58da.fitBounds(
+                [[34.0, -10.0], [72.0, 40.0]],
+                {"padding": [20, 20], "maxZoom": 4}
+            );
+        
+    
+            var layer_control_e994f81f7daeb62a8b2b7602b649237a_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_183f8e7b61787473d300adb4a56a4090,
+                    "Carto Light" : tile_layer_15ff6a386ea21b8fb7466de934f9fd9f,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_e994f81f7daeb62a8b2b7602b649237a = L.control.layers(
+                layer_control_e994f81f7daeb62a8b2b7602b649237a_layers.base_layers,
+                layer_control_e994f81f7daeb62a8b2b7602b649237a_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_953b783f49f11f56027d50548eca58da);
+
+        
+</script>
+<script>
+  // Einheitlicher Europa-Zoom (zentriert, Zoom ~4)
+  try {
+    if(window.map && typeof window.map.setView === 'function'){
+      window.map.setView([53.0, 15.0], 4);
+    } else if(window.map && typeof window.map.fitBounds === 'function'){
+      window.map.fitBounds([[34.0, -10.0],[72.0, 40.0]], { padding:[20,20], maxZoom: 4 });
+    }
+  } catch(e) { console.warn('Konnte Europa-View nicht setzen:', e); }
+</script>
+</html>

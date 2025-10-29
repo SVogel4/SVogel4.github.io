@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f351586de9000ff56a5d255edb945912 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_f351586de9000ff56a5d255edb945912" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_f351586de9000ff56a5d255edb945912 = L.map(
+                "map_f351586de9000ff56a5d255edb945912",
+                {
+                    // Europa-Zentrum
+                    center: [53.0, 15.0],
+                     crs: L.CRS.EPSG3857,
+                     ...{
+  "zoom": 4,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_7d717829b9be5694ae57fa1bcd93f006 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_7d717829b9be5694ae57fa1bcd93f006.addTo(map_f351586de9000ff56a5d255edb945912);
+        
+    
+            var tile_layer_faa4859a275abf42ad34c815874bd23c = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_faa4859a275abf42ad34c815874bd23c.addTo(map_f351586de9000ff56a5d255edb945912);
+        
+    
+            var marker_da6a5e45537d5f6ff3689a0c83815e29 = L.marker(
+                [49.0069, 8.4037],
+                {
+}
+            ).addTo(map_f351586de9000ff56a5d255edb945912);
+        
+    
+            var icon_169bf9793ae6b2ff0e1529bdff7f0b40 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1b437ba444fd48f17db2cb4c7b684e0f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_223ca402632c518ecc4202c7749370ba = $(`<div id="html_223ca402632c518ecc4202c7749370ba" style="width: 100.0%; height: 100.0%;"><strong>Geburtsort</strong><br>Karlsruhe</div>`)[0];
+                popup_1b437ba444fd48f17db2cb4c7b684e0f.setContent(html_223ca402632c518ecc4202c7749370ba);
+            
+        
+
+        marker_da6a5e45537d5f6ff3689a0c83815e29.bindPopup(popup_1b437ba444fd48f17db2cb4c7b684e0f)
+        ;
+
+        
+    
+    
+                marker_da6a5e45537d5f6ff3689a0c83815e29.setIcon(icon_169bf9793ae6b2ff0e1529bdff7f0b40);
+            
+    
+            var marker_2a3c6e6473e06533a37e5a29ab5dbfd1 = L.marker(
+                [49.06119, 8.0799],
+                {
+}
+            ).addTo(map_f351586de9000ff56a5d255edb945912);
+        
+    
+            var icon_5f32888b1100f4ffc0725f290eb4378f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4780c14620ff930ad815f62b0c9f4c52 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_5488792ef034c0a406b7a7a53039b50d = $(`<div id="html_5488792ef034c0a406b7a7a53039b50d" style="width: 100.0%; height: 100.0%;"><strong>Heimat</strong><br>Schaidt</div>`)[0];
+                popup_4780c14620ff930ad815f62b0c9f4c52.setContent(html_5488792ef034c0a406b7a7a53039b50d);
+            
+        
+
+        marker_2a3c6e6473e06533a37e5a29ab5dbfd1.bindPopup(popup_4780c14620ff930ad815f62b0c9f4c52)
+        ;
+
+        
+    
+    
+                marker_2a3c6e6473e06533a37e5a29ab5dbfd1.setIcon(icon_5f32888b1100f4ffc0725f290eb4378f);
+            
+    
+            var marker_38c40aa115d74227d54e529638766974 = L.marker(
+                [50.0, 8.16],
+                {
+}
+            ).addTo(map_f351586de9000ff56a5d255edb945912);
+        
+    
+            var icon_ba77365fccfcd4566bc463cbb2f349e6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ad8b8102e7701bc30f30e27892355553 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_708848d1ff31e9abfeded53ed194a00d = $(`<div id="html_708848d1ff31e9abfeded53ed194a00d" style="width: 100.0%; height: 100.0%;"><strong>Studienort</strong><br>Mainz</div>`)[0];
+                popup_ad8b8102e7701bc30f30e27892355553.setContent(html_708848d1ff31e9abfeded53ed194a00d);
+            
+        
+
+        marker_38c40aa115d74227d54e529638766974.bindPopup(popup_ad8b8102e7701bc30f30e27892355553)
+        ;
+
+        
+    
+    
+                marker_38c40aa115d74227d54e529638766974.setIcon(icon_ba77365fccfcd4566bc463cbb2f349e6);
+            
+    
+            // Setze gesamte Europa als Anfangsansicht
+            map_f351586de9000ff56a5d255edb945912.fitBounds(
+                [[34.0, -10.0], [72.0, 40.0]],
+                {"padding": [20, 20], "maxZoom": 4}
+            );
+        
+    
+            var layer_control_dc93c2dbe2aed756e4e55b9dd67ab284_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_7d717829b9be5694ae57fa1bcd93f006,
+                    "Carto Light" : tile_layer_faa4859a275abf42ad34c815874bd23c,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_dc93c2dbe2aed756e4e55b9dd67ab284 = L.control.layers(
+                layer_control_dc93c2dbe2aed756e4e55b9dd67ab284_layers.base_layers,
+                layer_control_dc93c2dbe2aed756e4e55b9dd67ab284_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_f351586de9000ff56a5d255edb945912);
+
+        
+  // Einheitlicher Europa-Zoom (zentriert, Zoom ~4)
+  try {
+    if(window.map && typeof window.map.setView === 'function'){
+      window.map.setView([53.0, 15.0], 4);
+    } else if(window.map && typeof window.map.fitBounds === 'function'){
+      window.map.fitBounds([[34.0, -10.0],[72.0, 40.0]], { padding:[20,20], maxZoom: 4 });
+    }
+  } catch(e) { console.warn('Konnte Europa-View nicht setzen:', e); }
+</script>
+</html>

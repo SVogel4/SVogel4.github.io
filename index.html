@@ -5,7 +5,7 @@
   <title>Sarah Vogel – Startseite</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    :root{
+        :root{
       --primary:#909191;
       --accent:rgb(59, 110, 92);
       --card-bg:#fff;
@@ -37,8 +37,9 @@
     .main-nav a:hover{background:rgba(255,255,255,0.06)}
     #theme-toggle{background:transparent;border:1px solid rgba(255,255,255,.12);color:#fff;padding:.45rem .7rem;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:.6rem}
     #theme-toggle svg{width:18px;height:18px}
-    main{max-width:900px;margin:1.2rem auto;padding:1.2rem;display:flex;flex-direction:column;gap:1.2rem}
-    section{background:var(--card-bg);border-radius:12px;box-shadow:var(--card-shadow);padding:1.2rem;border:1px solid var(--border)}
+    /* breiterer weißer Bereich für Seiteninhalt (größerer Seitenrand) */
+    main{max-width:1300px;margin:1.6rem auto;padding:1.6rem;display:flex;flex-direction:column;gap:1.4rem}
+    section{background:var(--card-bg);border-radius:12px;box-shadow:var(--card-shadow);padding:1.4rem;border:1px solid var(--border)}
     .center-img{display:flex;flex-direction:column;align-items:center;margin:1rem 0}
     .center-img img{width:220px;height:220px;object-fit:cover;border-radius:8px;border:3px solid var(--primary);box-shadow:0 8px 20px rgba(0,0,0,.08)}
     table{width:100%;border-collapse:collapse;margin-top:.8rem}
@@ -106,9 +107,56 @@
       border-radius: 8px;
       margin-bottom: 0.5rem;
     }
+
+    /* Karten-Grid unter Projects */
+    .map-grid{
+      display:grid;
+      gap:1rem;
+      margin-top:1rem;
+      /* Drei Karten nebeneinander auf großen Bildschirmen, responsive auf kleinere Geräte */
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width:1000px){
+      .map-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width:720px){
+      .map-grid{ grid-template-columns: 1fr; }
+    }
+    .map-card{
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:10px;
+      box-shadow:var(--card-shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .map-card .map-title{padding:.6rem .9rem;border-bottom:1px solid var(--border);font-weight:600;color:var(--primary)}
+    /* größere Kartenvorschau */
+    .map-card iframe{width:100%;height:360px;border:0;display:block}
+    @media (max-width:720px){ .map-card iframe{height:220px} }
+
+    /* einzelne Karte in voller Breite einer Spalte (zentriert unter drei Karten) */
+    .map-grid.map-single-row{ grid-template-columns: repeat(3, 1fr); }
+    .map-card.map-single{ grid-column: 2 / 3; width:100%; }
+    @media (max-width:1000px){
+      .map-grid.map-single-row{ grid-template-columns: repeat(2, 1fr); }
+      .map-card.map-single{ grid-column: 1 / -1; max-width: none; }
+    }
+    @media (max-width:720px){
+      .map-grid.map-single-row{ grid-template-columns: 1fr; }
+      .map-card.map-single{ grid-column: 1 / -1; }
+    }
+
+    /* kleiner Cesium-Container in der Vorschau: passt zur iframe-Höhe */
+    #cesiumContainer { width:100%; height:360px; border:0; display:block; }
+    @media (max-width:720px){ #cesiumContainer { height:220px; } }
   </style>
-</head>
-<body>
+
+  <!-- Cesium CSS (für 3D-Viewer) -->
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.125/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+ </head>
+ <body>
 <header>
   <div class="title">
     <h1>Sarah Vogel</h1>
@@ -155,28 +203,43 @@
 </section>
 
 <section id="projects-section">
-  <h2>Galerie</h2>
-  <div class="gallery" aria-label="Galerie">
-    <div class="card">
-      <a href="https://github.com/SVogel4" target="_blank" rel="noopener">
-        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png" alt="Code Symbol">
-        <div class="card-content"><div class="card-title">GitHub</div><div class="card-text">Projekte</div></div>
-      </a>
-    </div>
-    <div class="card">
-      <a href="https://www.openstreetmap.org/#map=12/52.5200/13.4050" target="_blank" rel="noopener">
-        <img src="Welt.jpg" alt="OSM">
-        <div class="card-content"><div class="card-title">OpenStreetMap</div><div class="card-text">Karten</div></div>
-      </a>
-    </div>
-    <div class="card">
-      <a href="https://svogel4.github.io" target="_blank" rel="noopener">
-        <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png" alt="Web">
-        <div class="card-content"><div class="card-title">Web</div><div class="card-text">Projekte</div></div>
-      </a>
-    </div>
-  </div>
-</section>
+      <!-- Drei Karten nebeneinander -->
+      <h2>Karten</h2>
+      <div class="map-grid" aria-label="Projektkarten" style="margin-top:0.6rem">
+         <div class="map-card">
+           <div class="map-title">Basiskarte</div>
+           <iframe src="map_1_basiskarte.html" title="Basiskarte" data-view="germany"></iframe>
+         </div>
+         <div class="map-card">
+           <div class="map-title">persönlich wichtige Orte</div>
+           <!-- Europe view -->
+           <iframe src="map_2_punkte.html" title="persönlich wichtige Orte" data-view="europe"></iframe>
+         </div>
+         <div class="map-card">
+           <div class="map-title">Reiseroute des letzten Urlaubs</div>
+           <!-- Europe view -->
+           <iframe src="map_3_reiseroute.html" title="Reiseroute des letzten Urlaubs" data-view="europe"></iframe>
+         </div>
+      </div>
+
+      <!-- Vierte Karte: in eigener 3‑Spalten‑Grid, mittig (hat gleiche Breite wie eine Spalte) -->
+      <div class="map-grid" style="margin-top:1rem; grid-template-columns: repeat(3,1fr); gap:1rem" aria-label="Karte4 + 3D + Kepler">
+        <div class="map-card">
+          <div class="map-title">Karte der besuchten Länder</div>
+          <iframe src="map_4_basiskarte.html" title="Karte der besuchten Länder" data-view="europe"></iframe>
+        </div>
+
+        <div class="map-card">
+          <div class="map-title">3D-Gebäude (Cesium, LoD2)</div>
+          <div id="cesiumContainer" role="application" aria-label="3D Gebäude Ansicht" style="width:100%;height:360px"></div>
+        </div>
+
+        <div class="map-card">
+          <div class="map-title">Kepler.gl — interaktive Visualisierung</div>
+          <iframe src="kepler.gl.html" title="Kepler.gl" style="width:100%;height:360px;border:0"></iframe>
+        </div>
+      </div>
+     </section>
 
 <div id="contact-card" class="contact-card" aria-label="Kontakt">
   <a href="mailto:email@example.com" title="E-Mail" aria-label="E-Mail">
@@ -255,6 +318,207 @@
 
   projectsLink&&projectsLink.addEventListener('click',ev=>{ev.preventDefault(); setActive(projectsLink); showSection(projectsSection);});
 })();
-</script>
-</body>
+
+// Erzwinge für eingebettete Karten in .map-card die Deutschland‑Ansicht
+(function(){
+    // [southWest, northEast]
+    const germanyBbox = [[47.2, 5.8], [55.1, 15.2]];
+    const germanyCenter = [(47.2 + 55.1) / 2, (5.8 + 15.2) / 2]; // ~[51.15, 10.5]
+    const desiredZoom = 6; // gewünschter Zoomlevel für Deutschland-Übersicht
+
+    function setGermanyViewOnMap(map){
+      try{
+        if(!map) return false;
+        // bevorzugt: fitBounds mit maxZoom, dann ggf. setView um konsistenten Zoom zu erzwingen
+        if(typeof map.fitBounds === 'function'){
+          try{
+            map.fitBounds(germanyBbox, { padding: [20,20], maxZoom: desiredZoom });
+          }catch(e){}
+        }
+        if(typeof map.setView === 'function'){
+          try{
+            // setView erst nach kurzer Verzögerung, falls fitBounds erst asynchron wirkt
+            setTimeout(()=> {
+              try{ map.setView(germanyCenter, desiredZoom); }catch(e){}
+            }, 120);
+          }catch(e){}
+        }
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    function adjustIframeToGermany(iframe){
+      try{
+        const win = iframe.contentWindow;
+        if(!win) return;
+
+        // 1) direkte global 'map' Variable (von Leaflet / Folium)
+        try{
+          if(win.map && setGermanyViewOnMap(win.map)) return;
+        }catch(e){}
+
+        // 2) Suche nach Leaflet-Instanzen in globalen Variablen des iframe
+        try{
+          if(win.L && typeof win.L === 'object'){
+            for(const k in win){
+              try{
+                const cand = win[k];
+                if(setGermanyViewOnMap(cand)) return;
+              }catch(e){}
+            }
+          }
+        }catch(e){}
+
+        // 3) Allgemeine Suche nach Objekten mit fitBounds / setView (Fallback)
+        for(const k in win){
+          try{
+            const v = win[k];
+            if(v && (typeof v.fitBounds === 'function' || typeof v.setView === 'function')){
+              if(setGermanyViewOnMap(v)) return;
+            }
+          }catch(e){}
+        }
+
+        // 4) Falls Leaflet nicht als Objekt zugreifbar ist, versuche eval im iframe (gleiche Origin erforderlich)
+        try{
+          if(typeof win.eval === 'function'){
+            const code = `
+              (function(){
+                try{
+                  var bbox = ${JSON.stringify(germanyBbox)};
+                  var center = ${JSON.stringify(germanyCenter)};
+                  var z = ${desiredZoom};
+                  if(window.map && typeof window.map.fitBounds === 'function'){
+                    window.map.fitBounds(bbox, {padding:[20,20], maxZoom: z});
+                    setTimeout(()=>{ try{ window.map.setView(center,z); }catch(e){} }, 120);
+                    return;
+                  }
+                  if(window.L && window.L.map){
+                    // finde erste Karte-Instanz und setze bounds
+                    for(var k in window){
+                      try{
+                        var cand = window[k];
+                        if(cand && typeof cand.fitBounds === 'function'){
+                          cand.fitBounds(bbox, {padding:[20,20], maxZoom: z});
+                          setTimeout(()=>{ try{ cand.setView(center,z); }catch(e){} }, 120);
+                          return;
+                        }
+                      }catch(e){}
+                    }
+                  }
+                }catch(e){}
+              })();`;
+            win.eval(code);
+          }
+        }catch(e){}
+      }catch(e){
+        // Cross-origin oder andere Fehler — cannot adjust
+        console.debug('adjustIframeToGermany failed for', iframe.src, e);
+      }
+    }
+
+    // beobachte alle iframes in .map-card
+    document.querySelectorAll('.map-card iframe').forEach(iframe => {
+      iframe.addEventListener('load', ()=> adjustIframeToGermany(iframe));
+      try{
+        if(iframe.contentDocument && iframe.contentDocument.readyState === 'complete'){
+          adjustIframeToGermany(iframe);
+        }
+      }catch(e){}
+    });
+  })();
+  </script>
+
+  <!-- Cesium JS -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.125/Build/Cesium/Cesium.js"></script>
+  <script>
+    (function(){
+      if(typeof Cesium === 'undefined') return;
+      // Viewer initialisieren
+      const viewer = new Cesium.Viewer('cesiumContainer', {
+        shadows: false,
+        geocoder: false,
+        baseLayerPicker: false,
+        timeline: false,
+        animation: false,
+        infoBox: false,
+        selectionIndicator: false
+      });
+
+      // OSM als Hintergrund (optional)
+      const osm = new Cesium.OpenStreetMapImageryProvider({
+        url : '//a.tile.openstreetmap.org/',
+        credit: new Cesium.Credit('<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>', true)
+      });
+      viewer.imageryLayers.addImageryProvider(osm);
+
+      // WMS Basemapde (optional, kann entfernt werden)
+      const provider = new Cesium.WebMapServiceImageryProvider({
+        url : 'https://sgx.geodatenzentrum.de/wms_basemapde?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
+        layers: "de_basemapde_web_raster_farbe",
+        parameters: { transparent: true, format: "image/png" }
+      });
+      viewer.imageryLayers.addImageryProvider(provider);
+
+      // Kameraposition (Beispiel)
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(6.958215,50.932767, 1500.0),
+        orientation: { heading: Cesium.Math.toRadians(0.0), pitch: Cesium.Math.toRadians(-50.0), roll: 0.0 }
+      });
+
+      // Tileset-URL (LoD2 Gebäude, live)
+      const tilesetUrl = "https://sgx.geodatenzentrum.de/gdz_basemapde_3d_gebaeude/lod2_4978_null.json";
+      const tileset = new Cesium.Cesium3DTileset({ url: tilesetUrl, maximumScreenSpaceError: 8, maximumMemoryUsage: 512 });
+      viewer.scene.primitives.add(tileset);
+
+      tileset.readyPromise.then(() => {
+        // style nach 'surface' property (wall/roof/bridge) falls vorhanden
+        tileset.style = new Cesium.Cesium3DTileStyle({
+          color : {
+            conditions : [
+              ["${surface} === 'wall'", "color('#f2f2f2')"],
+              ["${surface} === 'roof'", "color('#ff5c4d')"],
+              ["${surface} === 'bridge'", "color('#999999')"],
+              ["true", "color('#d3d3d3')"]
+            ]
+          }
+        });
+        viewer.zoomTo(tileset).otherwise(()=> {
+          viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
+        });
+      }).otherwise(err=>{
+        console.error('Tileset load error', err);
+        viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
+      });
+
+      // Klick: Eigenschaften anzeigen (einfaches Overlay)
+      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+      handler.setInputAction(function(click) {
+        const picked = viewer.scene.pick(click.position);
+        if(!Cesium.defined(picked) || !picked.getPropertyNames) return;
+        const names = picked.getPropertyNames();
+        const info = names.map(n => `<b>${n}:</b> ${picked.getProperty(n)}`).join('<br>');
+        let overlay = document.getElementById('cesium-info-overlay');
+        if(!overlay){
+          overlay = document.createElement('div');
+          overlay.id = 'cesium-info-overlay';
+          overlay.style.position = 'absolute';
+          overlay.style.right = '8px';
+          overlay.style.bottom = '8px';
+          overlay.style.maxWidth = '320px';
+          overlay.style.zIndex = 9999;
+          overlay.style.background = 'rgba(0,0,0,0.75)';
+          overlay.style.color = 'white';
+          overlay.style.padding = '8px';
+          overlay.style.borderRadius = '6px';
+          document.getElementById('cesiumContainer').appendChild(overlay);
+        }
+        overlay.innerHTML = `<strong>Feature</strong><br>${info}<br><button id="closeCesiumInfo">Schließen</button>`;
+        document.getElementById('closeCesiumInfo').onclick = ()=> overlay.remove();
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    })();
+  </script>
+ </body>
 </html>
