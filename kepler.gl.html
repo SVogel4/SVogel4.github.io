@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/uber-fonts/4.0.0/superfine.css">
 
         <!--Kepler css-->
-        <link href="https://unpkg.com/kepler.gl@3.2.0/umd/keplergl.min.css" rel="stylesheet">
+        <link href="https://unpkg.com/kepler.gl@3.2.1/umd/keplergl.min.css" rel="stylesheet">
 
         <!--MapBox css-->
         <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css" rel="stylesheet">
@@ -41,7 +41,7 @@
         <script src="https://unpkg.com/styled-components@6.1.8/dist/styled-components.min.js" crossorigin></script>
 
         <!-- Load Kepler.gl -->
-        <script src="https://unpkg.com/kepler.gl@3.2.0/umd/keplergl.min.js" crossorigin></script>
+        <script src="https://unpkg.com/kepler.gl@3.2.1/umd/keplergl.min.js" crossorigin></script>
 
         <style type="text/css">
           body {margin: 0; padding: 0; overflow: hidden;}
@@ -52,7 +52,7 @@
           /**
            * Provide your MapBox Token
            **/
-          const MAPBOX_TOKEN = 'Kepler';
+          const MAPBOX_TOKEN = 'pk.eyJ1IjoidWNmLW1hcGJveCIsImEiOiJjbDBiYzlveHgwdnF0M2NtZzUzZWZuNWZ4In0.l9J8ptz3MKwaU9I4PtCcig';
           const WARNING_MESSAGE = 'Please Provide a Mapbox Token in order to use Kepler.gl. Edit this file and fill out MAPBOX_TOKEN with your access key';
         </script>
 
@@ -214,7 +214,7 @@
            */
           (function customize(keplerGl, store) {
             const datasets = [];
-            const config = {"version":"v1","config":{"visState":{"filters":[],"layers":[],"effects":[],"interactionConfig":{"tooltip":{"fieldsToShow":{},"compareMode":false,"compareType":"absolute","enabled":false},"brush":{"size":20.7,"enabled":true},"geocoder":{"enabled":false},"coordinate":{"enabled":false}},"layerBlending":"normal","overlayBlending":"normal","splitMaps":[],"animationConfig":{"currentTime":null,"speed":1},"editor":{"features":[],"visible":true}},"mapState":{"bearing":0,"dragRotate":false,"latitude":48.8433288080022,"longitude":3.8583335809744566,"pitch":0,"zoom":3.5812515900541046,"isSplit":false,"isViewportSynced":true,"isZoomLocked":false,"splitMapViewports":[]},"mapStyle":{"styleType":"satellite","topLayerGroups":{},"visibleLayerGroups":{"label":true,"road":true,"border":false,"building":true,"water":true,"land":true,"3d building":false},"threeDBuildingColor":[4.179000818945631,7.370237807958659,14.816457448989057],"backgroundColor":[0,0,0],"mapStyles":{}},"uiState":{"mapControls":{"mapLegend":{"active":false}}}}};
+            const config = {"version":"v1","config":{"visState":{"filters":[],"layers":[],"effects":[],"interactionConfig":{"tooltip":{"fieldsToShow":{},"compareMode":false,"compareType":"absolute","enabled":true},"brush":{"size":0.5,"enabled":false},"geocoder":{"enabled":false},"coordinate":{"enabled":false}},"layerBlending":"normal","overlayBlending":"normal","splitMaps":[],"animationConfig":{"currentTime":null,"speed":1},"editor":{"features":[],"visible":true}},"mapState":{"bearing":0,"dragRotate":false,"latitude":37.75043,"longitude":-122.34679,"pitch":0,"zoom":9,"isSplit":false,"isViewportSynced":true,"isZoomLocked":false,"splitMapViewports":[]},"mapStyle":{"styleType":"dark-matter","topLayerGroups":{},"visibleLayerGroups":{"label":true,"road":true,"border":false,"building":true,"water":true,"land":true,"3d building":false},"threeDBuildingColor":[15.035172933000911,15.035172933000911,15.035172933000911],"backgroundColor":[0,0,0],"mapStyles":{}},"uiState":{"mapControls":{"mapLegend":{"active":false}}}}};
 
             const loadedData = keplerGl.KeplerGlSchema.load(
               datasets,

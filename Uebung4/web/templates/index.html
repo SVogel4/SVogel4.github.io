@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <title>Flask + PostGIS Demo</title>
+  <style>body{font-family:system-ui,Arial;padding:24px} pre{background:#f7f7f7;padding:12px;border-radius:8px} #map{height:60vh;margin-bottom:12px;border-radius:8px;box-shadow:0 2px 8px #0001}</style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+</head>
+<body>
+  <h1>✅ Service is running</h1>
+  <p>Die Orte werden auf der Karte angezeigt, wenn die API Daten liefert.</p>
+
+  <div id="map">Loading map…</div>
+  <div id="out">Loading table…</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    // parse WKT "POINT(lon lat)" -> [lat, lon]
+    function wktPointToLatLon(wkt) {
+      if (!wkt) return null;
+      const m = wkt.match(/POINT\s*\(\s*([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)/i);
+      if (!m) return null;
+      const lon = Number(m[1]), lat = Number(m[2]);
+      return [lat, lon];
+    }
+
+    // Extract lat/lon from: GeoJSON object, JSON-stringified GeoJSON, WKT string (geom_wkt or geom), or explicit fields
+    function extractLatLon(row) {
+      if (!row) return null;
+
+      // geom might be an object (GeoJSON) or a stringified JSON -> try parse
+      let g = row.geom;
+      if (typeof g === 'string') {
+        // try parse as GeoJSON string
+        try { g = JSON.parse(g); } catch(e) { /* not JSON */ }
+      }
+      if (g && typeof g === 'object' && g.type === 'Point' && Array.isArray(g.coordinates)) {
+        const [lon, lat] = g.coordinates;
+        return [Number(lat), Number(lon)];
+      }
+
+      // fallback: explicit WKT field or geom as WKT string
+      if (row.geom_wkt && typeof row.geom_wkt === 'string') {
+        const ll = wktPointToLatLon(row.geom_wkt);
+        if (ll) return ll;
+      }
+      if (typeof row.geom === 'string') {
+        const ll = wktPointToLatLon(row.geom);
+        if (ll) return ll;
+      }
+
+      // explicit lat/lon columns (if present)
+      if (row.latitude !== undefined && row.longitude !== undefined) return [Number(row.latitude), Number(row.longitude)];
+      if (row.lat !== undefined && row.lon !== undefined) return [Number(row.lat), Number(row.lon)];
+      if (row.y !== undefined && row.x !== undefined) return [Number(row.y), Number(row.x)];
+
+      return null;
+    }
+
+    // init map (center Germany as fallback)
+    const map = L.map('map').setView([51.1657, 10.4515], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+
+    fetch('/api/places')
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data) || data.length === 0) {
+          document.getElementById('out').textContent = 'No data.';
+          return;
+        }
+
+        const markers = [];
+        let html = '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;">';
+        html += '<thead><tr>';
+        const keys = Object.keys(data[0]);
+        for (const key of keys) html += `<th>${key}</th>`;
+        html += '<th>lat</th><th>lon</th></tr></thead><tbody>';
+
+        data.forEach(row => {
+          const ll = extractLatLon(row);
+          html += '<tr>';
+          for (const key of keys) html += `<td>${String(row[key] ?? '')}</td>`;
+          if (ll) {
+            html += `<td>${ll[0]}</td><td>${ll[1]}</td>`;
+            const marker = L.marker(ll).addTo(map);
+            const popupHtml = `<strong>${row.name || row.id || 'Ort'}</strong><br>${row.geom_wkt ? row.geom_wkt : ''}`;
+            marker.bindPopup(popupHtml);
+            markers.push(marker);
+          } else {
+            html += `<td colspan="2">—</td>`;
+          }
+          html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('out').innerHTML = html;
+
+        if (markers.length) {
+          const group = L.featureGroup(markers);
+          map.fitBounds(group.getBounds().pad(0.2));
+        } else {
+          map.setView([51.1657, 10.4515], 6);
+        }
+      })
+      .catch(err => {
+        document.getElementById('out').textContent = 'Fehler beim Laden: ' + err;
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

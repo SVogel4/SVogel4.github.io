@@ -1,82 +1,142 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>3D Gebäude (Cesium)</title>
-  <link href="https://unpkg.com/cesium@1.111/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-  <style>html,body,#cesiumContainer{height:100%;margin:0;padding:0;width:100%} #cesiumContainer{min-height:360px}</style>
+  <meta charset="utf-8">
+  <title>LoD2 Gebäude (Cesium)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.125/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: system-ui, Arial, sans-serif;
+    }
+    /* bei Einbettung als Vorschau */
+    #cesiumContainer.embed { height: 360px; }
+    #cesium-error {
+      position: absolute; left: 8px; top: 8px; right: 8px;
+      background: rgba(0,0,0,0.85); color: #fff; padding: 12px; border-radius: 6px;
+      z-index: 9999; max-width: calc(100% - 16px);
+    }
+    #cesium-error a { color: #9cf; }
+  </style>
 </head>
 <body>
-  <div id="cesiumContainer"></div>
+  <div id="cesiumContainer" class="embed" role="application" aria-label="Cesium 3D Viewer"></div>
+  <div id="cesium-error" style="display:none;"></div>
 
-  <script src="https://unpkg.com/cesium@1.111/Build/Cesium/Cesium.js"></script>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.125/Build/Cesium/Cesium.js"></script>
   <script>
     (function(){
-      // Viewer initialisieren (OSM-Basemap)
+      const tilesetUrl = "https://sg.geodatenzentrum.de/gdz_basemapde_3d_gebaeude/lod2_4978_null.json";
+      const errorBox = document.getElementById('cesium-error');
+
+      function showError(msg, details){
+        errorBox.style.display = 'block';
+        errorBox.innerHTML = '<strong>Fehler: 3D‑Gebäude konnten nicht geladen werden.</strong><div style="margin-top:6px">'+msg+
+                             (details?('<pre style="white-space:pre-wrap;margin-top:8px;color:#f88">'+details+'</pre>'):'')+
+                             '<div style="margin-top:8px;font-size:.9rem">Tipp: Seite per lokalem Webserver testen: <code>python -m http.server 8000</code></div></div>';
+        console.error(msg, details||'');
+      }
+
+      if (typeof Cesium === 'undefined') {
+        showError('Cesium-Bibliothek nicht geladen.', 'Prüfe Netzwerk/Script-Tag.');
+        return;
+      }
+
+      // Viewer initialisieren
       const viewer = new Cesium.Viewer('cesiumContainer', {
-        imageryProvider: new Cesium.OpenStreetMapImageryProvider(),
+        imageryProvider: new Cesium.OpenStreetMapImageryProvider({ url: 'https://a.tile.openstreetmap.org/' }),
         baseLayerPicker: false,
         geocoder: false,
         timeline: false,
         animation: false,
-        scene3DOnly: true,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        fullscreenButton: false,
+        infoBox: false,
         selectionIndicator: false,
-        infoBox: false
+        scene3DOnly: true
       });
 
-      // URL des 3D-Tilesets (aktuelle Internetquelle)
-      const tilesetUrl = 'https://sg.geodatenzentrum.de/gdz_basemapde_3d_gebaeude/lod2_3857_null.json';
+      // Simple (non-Ion) Terrain
+      viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+      viewer.scene.globe.depthTestAgainstTerrain = true;
+      viewer.scene.globe.enableLighting = true;
 
-      // 3D Tileset laden und als extrudierte Gebäude darstellen
-      const tileset = new Cesium.Cesium3DTileset({
-        url: tilesetUrl,
-        maximumScreenSpaceError: 8, // Performance-Tweak
-        maximumMemoryUsage: 512
-      });
+      // Vorab-Check: Tileset-JSON per fetch prüfen (CORS / Verfügbarkeit)
+      fetch(tilesetUrl, { method: 'GET', mode: 'cors' })
+        .then(resp => {
+          if(!resp.ok) throw new Error('HTTP '+resp.status);
+          // Prüfe Access-Control-Allow-Origin Header (wenn vorhanden)
+          const aca = resp.headers.get('access-control-allow-origin');
+          if(aca === null){
+            // Header fehlt — mögliches CORS-Problem bei Folgelade durch Cesium
+            console.warn('Kein Access-Control-Allow-Origin Header in Antwort. Tileset könnte durch CORS blockiert werden.');
+            // Versuche trotzdem, das Tileset mit Cesium zu laden — Cesium liefert dann Fehler falls blockiert.
+          }
+          return resp.json().catch(()=>null).then(()=>resp);
+        })
+        .then(()=> {
+          // Tileset hinzufügen
+          const tileset = new Cesium.Cesium3DTileset({
+            url: tilesetUrl,
+            maximumScreenSpaceError: 4,
+            maximumMemoryUsage: 1024
+          });
+          viewer.scene.primitives.add(tileset);
 
-      viewer.scene.primitives.add(tileset);
+          tileset.readyPromise.then(() => {
+            tileset.style = new Cesium.Cesium3DTileStyle({
+              color: {
+                conditions: [
+                  ["${surface} === 'wall'", "color('#f2f2f2')"],
+                  ["${surface} === 'roof'", "color('#ff5c4d')"],
+                  ["${surface} === 'bridge'", "color('#999999')"],
+                  ["true", "color('#d3d3d3')"]
+                ]
+              }
+            });
+            return viewer.zoomTo(tileset);
+          }).catch(err => {
+            showError('Tileset geladen, Zoom/Style fehlgeschlagen.', String(err));
+          });
 
-      // Optionales Styling: versuche property-Namen, fallback neutral
-      tileset.readyPromise.then(() => {
-        // Beispielhafter Style: Farbe abhängig von 'height'/'hoehe' etc. (falls vorhanden)
-        tileset.style = new Cesium.Cesium3DTileStyle({
-          color : "(((${height} !== undefined) ? ${height} : ((${hoehe} !== undefined) ? ${hoehe} : ((${h} !== undefined)? ${h} : 0))) > 30) ? color('#c85') : ((((${height} !== undefined) ? ${height} : ((${hoehe} !== undefined) ? ${hoehe} : ((${h} !== undefined)? ${h} : 0))) > 15) ? color('#ffb74d') : color('#ffd54f'))",
-          show : true
+        })
+        .catch(err => {
+          // Fetch schlug fehl — wahrscheinlich CORS oder Netzproblem
+          const details = String(err);
+          showError('Tileset konnte nicht per Fetch überprüft werden. Möglicherweise CORS- oder Netzwerkfehler.', details);
         });
-        // Kamera auf Tileset zoomen
-        viewer.zoomTo(tileset).otherwise(() => {
-          // fallback: Deutschland-Übersicht
-          viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
-        });
-      }).otherwise((err)=>{
-        console.error('Tileset load error', err);
-        viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
-      });
 
-      // Klick: Feature-Eigenschaften anzeigen (falls verfügbar)
-      viewer.screenSpaceEventHandler.setInputAction(function(click) {
+      // Klick-Picking: Eigenschaften anzeigen
+      const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+      handler.setInputAction(function(click) {
         const picked = viewer.scene.pick(click.position);
-        if (!Cesium.defined(picked)) return;
-        const feature = picked;
-        if (feature && feature.getPropertyNames) {
-          const names = feature.getPropertyNames();
-          const info = names.map(n => `<b>${n}:</b> ${feature.getProperty(n)}`).join('<br>');
-          // kleines Overlay:
-          const div = document.createElement('div');
-          div.style.position = 'absolute';
-          div.style.left = '10px';
-          div.style.top = '10px';
-          div.style.background = 'rgba(0,0,0,0.7)';
-          div.style.color = 'white';
-          div.style.padding = '8px';
-          div.style.maxHeight = '200px';
-          div.style.overflow = 'auto';
-          div.style.zIndex = 9999;
-          div.innerHTML = `<strong>Feature</strong><br>${info}<br><button id="closeInfo">Schließen</button>`;
-          document.body.appendChild(div);
-          document.getElementById('closeInfo').onclick = ()=>div.remove();
+        if (!Cesium.defined(picked) || !picked.getPropertyNames) return;
+        const names = picked.getPropertyNames();
+        const info = names.map(n => `<b>${n}:</b> ${picked.getProperty(n)}`).join('<br>');
+        let overlay = document.getElementById('cesium-info-overlay');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.id = 'cesium-info-overlay';
+          overlay.style.position = 'absolute';
+          overlay.style.right = '8px';
+          overlay.style.bottom = '8px';
+          overlay.style.maxWidth = '320px';
+          overlay.style.zIndex = 9999;
+          overlay.style.background = 'rgba(0,0,0,0.75)';
+          overlay.style.color = 'white';
+          overlay.style.padding = '8px';
+          overlay.style.borderRadius = '6px';
+          document.getElementById('cesiumContainer').appendChild(overlay);
         }
+        overlay.innerHTML = `<strong>Feature</strong><br>${info}<br><button id="closeCesiumInfo">Schließen</button>`;
+        document.getElementById('closeCesiumInfo').onclick = () => overlay.remove();
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     })();

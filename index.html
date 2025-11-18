@@ -231,7 +231,7 @@
 
         <div class="map-card">
           <div class="map-title">3D-Gebäude (Cesium, LoD2)</div>
-          <div id="cesiumContainer" role="application" aria-label="3D Gebäude Ansicht" style="width:100%;height:360px"></div>
+          <iframe src="map_5_3d.html" title="3D-Gebäude (Cesium LoD2)" style="width:100%;height:360px;border:0" loading="lazy"></iframe>
         </div>
 
         <div class="map-card">
@@ -481,65 +481,105 @@
   <script>
     (function(){
       if(typeof Cesium === 'undefined') return;
-      // Viewer initialisieren
+
+      // Create viewer with a simple UI and disabled heavy widgets
       const viewer = new Cesium.Viewer('cesiumContainer', {
-        shadows: false,
-        geocoder: false,
+        imageryProvider: false,
         baseLayerPicker: false,
+        geocoder: false,
         timeline: false,
         animation: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        fullscreenButton: false,
         infoBox: false,
         selectionIndicator: false
       });
 
-      // OSM als Hintergrund (optional)
-      const osm = new Cesium.OpenStreetMapImageryProvider({
-        url : '//a.tile.openstreetmap.org/',
-        credit: new Cesium.Credit('<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>', true)
-      });
-      viewer.imageryLayers.addImageryProvider(osm);
+      // Add a lightweight OSM base layer (tile imagery)
+      viewer.imageryLayers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
+        url: 'https://a.tile.openstreetmap.org/'
+      }));
 
-      // WMS Basemapde (optional, kann entfernt werden)
-      const provider = new Cesium.WebMapServiceImageryProvider({
-        url : 'https://sgx.geodatenzentrum.de/wms_basemapde?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
-        layers: "de_basemapde_web_raster_farbe",
-        parameters: { transparent: true, format: "image/png" }
-      });
-      viewer.imageryLayers.addImageryProvider(provider);
+      // Ensure terrain/depth testing to correctly show 3D tiles over globe
+      viewer.scene.globe.depthTestAgainstTerrain = true;
 
-      // Kameraposition (Beispiel)
-      viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(6.958215,50.932767, 1500.0),
-        orientation: { heading: Cesium.Math.toRadians(0.0), pitch: Cesium.Math.toRadians(-50.0), roll: 0.0 }
-      });
-
-      // Tileset-URL (LoD2 Gebäude, live)
+      // Tileset URL (LoD2 Gebäude, live)
       const tilesetUrl = "https://sgx.geodatenzentrum.de/gdz_basemapde_3d_gebaeude/lod2_4978_null.json";
-      const tileset = new Cesium.Cesium3DTileset({ url: tilesetUrl, maximumScreenSpaceError: 8, maximumMemoryUsage: 512 });
+
+      // Create tileset with tighter LOD for better building detail
+      const tileset = new Cesium.Cesium3DTileset({
+        url: tilesetUrl,
+        // reduce SSE to request higher detail (increase CPU/GPU)
+        maximumScreenSpaceError: 4,
+        // allow more memory for tiles if available
+        maximumMemoryUsage: 1024
+      });
+
+      // Add tileset and wait for ready
       viewer.scene.primitives.add(tileset);
 
-      tileset.readyPromise.then(() => {
-        // style nach 'surface' property (wall/roof/bridge) falls vorhanden
-        tileset.style = new Cesium.Cesium3DTileStyle({
-          color : {
-            conditions : [
-              ["${surface} === 'wall'", "color('#f2f2f2')"],
-              ["${surface} === 'roof'", "color('#ff5c4d')"],
-              ["${surface} === 'bridge'", "color('#999999')"],
-              ["true", "color('#d3d3d3')"]
-            ]
-          }
-        });
-        viewer.zoomTo(tileset).otherwise(()=> {
-          viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
-        });
-      }).otherwise(err=>{
-        console.error('Tileset load error', err);
-        viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
-      });
+      // Debug: log initial scene/mode
+      console.log('Cesium scene mode:', viewer.scene.mode, 'scene3DOnly:', viewer.scene3DOnly);
 
-      // Klick: Eigenschaften anzeigen (einfaches Overlay)
-      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+      tileset.readyPromise.then(() => {
+        console.log('Tileset ready:', tilesetUrl, 'boundingSphere:', tileset.boundingSphere);
+        // ensure tileset visible
+        tileset.show = true;
+
+         // color by 'surface' when available, otherwise simple gray
+         tileset.style = new Cesium.Cesium3DTileStyle({
+           color: {
+             conditions: [
+               ["${surface} === 'wall'", "color('#f2f2f2')"],
+               ["${surface} === 'roof'", "color('#ff5c4d')"],
+               ["${surface} === 'bridge'", "color('#999999')"],
+               ["true", "color('#d3d3d3')"]
+             ]
+           }
+         });
+ 
+         // optionally enable lighting for better 3D perception
+         viewer.scene.globe.enableLighting = true;
+ 
+         // zoom to tileset bounding sphere
+         return viewer.zoomTo(tileset);
+       }).then(() => {
+        console.log('zoomTo finished');
+        // register picking handler AFTER tileset is ready so pick() can return tile features
+        const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas || viewer.canvas);
+        handler.setInputAction(function(click) {
+          const picked = viewer.scene.pick(click.position);
+          console.log('pick result:', picked);
+          if(!Cesium.defined(picked) || !picked.getPropertyNames) return;
+          const names = picked.getPropertyNames();
+          const info = names.map(n => `<b>${n}:</b> ${picked.getProperty(n)}`).join('<br>');
+          let overlay = document.getElementById('cesium-info-overlay');
+          if(!overlay){
+            overlay = document.createElement('div');
+            overlay.id = 'cesium-info-overlay';
+            overlay.style.position = 'absolute';
+            overlay.style.right = '8px';
+            overlay.style.bottom = '8px';
+            overlay.style.maxWidth = '320px';
+            overlay.style.zIndex = 9999;
+            overlay.style.background = 'rgba(0,0,0,0.75)';
+            overlay.style.color = 'white';
+            overlay.style.padding = '8px';
+            overlay.style.borderRadius = '6px';
+            document.getElementById('cesiumContainer').appendChild(overlay);
+          }
+          overlay.innerHTML = `<strong>Feature</strong><br>${info}<br><button id="closeCesiumInfo">Schließen</button>`;
+          document.getElementById('closeCesiumInfo').onclick = ()=> overlay.remove();
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+ 
+       }).catch(err => {
+         console.error('Tileset load/zoom error', err);
+         viewer.camera.setView({ destination: Cesium.Rectangle.fromDegrees(5.8,47.2,15.2,55.1) });
+       });
+
+      // Picking: show properties of picked feature in small overlay
+      const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
       handler.setInputAction(function(click) {
         const picked = viewer.scene.pick(click.position);
         if(!Cesium.defined(picked) || !picked.getPropertyNames) return;
